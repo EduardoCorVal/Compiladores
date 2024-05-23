@@ -45,13 +45,29 @@ class CodeGenerationVisitor(PTNodeVisitor):
         return ''.join(result)
     
     def visit_decimal(self, node, children):
-        return f'   i32.const { node.value }\n'
+        return f'    i32.const { node.value }\n'
 
     def visit_boolean(self, node, children):
         if children[0] == 'true':
             return '    i32.const 1\n'
         else:
             return '    i32.const 0\n'
+        
+    def visit_unary(self, node, children):
+        result = children[-1]
+        for op in children[-2::-1]:
+            match op:
+                case '+':
+                    ... # Do nothing
+                case '-':
+                    result = (
+                          '    i32.const 0\n'
+                        + result
+                        + '    i32.sub\n'
+                    )
+                case '!':
+                    result += '    i32.eqz\n'
+        return result
         
     def visit_parenthesis(self, node, children):
         return children[0]
