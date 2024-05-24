@@ -8,6 +8,8 @@ class SemanticMistake(Exception):
 
 
 class SemanticVisitor(PTNodeVisitor):
+    
+    RESERVED_WORDS = ['true', 'false', 'var']
 
     def __init__(self, parser, **kwargs):
         super().__init__(**kwargs)
@@ -20,6 +22,28 @@ class SemanticVisitor(PTNodeVisitor):
     @property
     def symbol_table(self):
         return self.__symbol_table
+    
+    def visit_decl_variable(self, node, children):
+        name = node.value
+        if name in SemanticVisitor.RESERVED_WORDS:
+            raise SemanticMistake(
+                'Reserved word not allowed as variable name at position'
+                f'{self.position(node)} => {name}'
+            )
+        if name in self.__symbol_table:
+            raise SemanticMistake(
+                'Duplicate variable declaration at position '
+                f'{self.position(node)} => {name}'
+            )
+        self.__symbol_table.append(name)
+        
+    def visit_lhs_variable(self, node, children):
+        name = node.value
+        if name not in self.__symbol_table:
+            raise SemanticMistake(
+                'Assignment to undeclared variable at position '
+                f'{self.position(node)} => {name}'
+            )
 
     '''
     Nodo que será visitado para hacer las validaciones
@@ -41,3 +65,10 @@ class SemanticVisitor(PTNodeVisitor):
     Para la tarea un int que lo vuelva tambien la base
     '''
     
+    def visit_rhs_variable(self, node, children):
+        name = node.value
+        if name not in self.__symbol_table:
+            raise SemanticMistake(
+                'Undeclare variable reference at position '
+                f'{self.position(node)} => {name}'
+            )
