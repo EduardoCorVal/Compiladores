@@ -51,7 +51,19 @@ class CodeGenerationVisitor(PTNodeVisitor):
 
     def visit_block(self, node, children):
         return ''.join(children)
-
+    
+    def visit_while(self, node, children):
+        return (
+              '    block\n' 
+            + '    loop\n'
+            + children[0]
+            + '    i32.eqz\n'
+            + '    br_if 1\n'
+            + children[1]
+            + '    br 0\n'
+            + '    end\n'
+            + '    end\n' 
+        )
 
     def visit_expression(self, node, children):
         # print('expression', children)
@@ -60,9 +72,9 @@ class CodeGenerationVisitor(PTNodeVisitor):
             result.append(children[i + 1])
             match children[i]:
                 case '+':
-                    result.append('   i32.add\n')
+                    result.append('    i32.add\n')
                 case '-':
-                    result.append('   i32.sub\n')
+                    result.append('    i32.sub\n')
         return ''.join(result)
     
     def visit_multiplicative(self, node, children):
@@ -71,11 +83,11 @@ class CodeGenerationVisitor(PTNodeVisitor):
             result.append(children[i + 1])
             match children[i]:
                 case '*':
-                    result.append('   i32.mul\n')
+                    result.append('    i32.mul\n')
                 case '/':
-                    result.append('   i32.div_s\n')
+                    result.append('    i32.div_s\n')
                 case '%':
-                    result.append('   i32.rem_s\n')
+                    result.append('    i32.rem_s\n')
         return ''.join(result)
     
     def visit_decimal(self, node, children):
