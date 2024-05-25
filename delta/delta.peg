@@ -6,12 +6,14 @@ comment = r'[/][/].*|[/][*](.|\n)*?[*][/]'
 identifier = r'[a-zA-Z]\w*'
 
 program = statement* expression EOF
-statement = declaration / assignment
+statement = declaration / assignment / if
 declaration = 'var' decl_variable (',' decl_variable)* ';'
 decl_variable = identifier
 assignment = lhs_variable '=' expression ';'
 lhs_variable = identifier
-expression = multiplicative (('+' / '-') multiplicative)* 
+if = 'if' expression block ('else' block)?
+block = '{' statement* '}'
+expression = multiplicative (('+' / '-') multiplicative)*
 multiplicative = unary (('*' / '/' / '%') unary)*
 unary = ('+' / '-' / '!')* primary
 primary = decimal / boolean / parenthesis / rhs_variable
