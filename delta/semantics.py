@@ -60,10 +60,33 @@ class SemanticVisitor(PTNodeVisitor):
                 'Out of range decimal integer literal at position'
                 f'{self.position(node)} => {value}'
             )
-
     '''
     Para la tarea un int que lo vuelva tambien la base
     '''
+    
+    def visit_binary(self, node, children):
+        value = int(node.value[2:], 2)
+        if value >= 2 ** 31:
+            raise SemanticMistake(
+                'Out of range decimal integer literal at position'
+                f'{self.position(node)} => {value}'
+            )
+            
+    def visit_octal(self, node, children):
+        value = int(node.value[2:], 8)
+        if value >= 2 ** 31:
+            raise SemanticMistake(
+                'Out of range decimal integer literal at position'
+                f'{self.position(node)} => {value}'
+            )
+            
+    def visit_hexadecimal(self, node, children):
+        value = int(node.value[2:], 16)
+        if value >= 2 ** 31:
+            raise SemanticMistake(
+                'Out of range decimal integer literal at position'
+                f'{self.position(node)} => {value}'
+            )
     
     def visit_rhs_variable(self, node, children):
         name = node.value

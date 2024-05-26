@@ -92,6 +92,18 @@ class CodeGenerationVisitor(PTNodeVisitor):
     
     def visit_decimal(self, node, children):
         return f'    i32.const { node.value }\n'
+    
+    def visit_binary(self, node, children):
+        decimal_value = int(node.value[2:], 2)
+        return f'    i32.const {decimal_value}\n'
+    
+    def visit_octal(self, node, children):
+        decimal_value = int(node.value[2:], 8)
+        return f'    i32.const {decimal_value}\n'
+    
+    def visit_hexadecimal(self, node, children):
+        decimal_value = int(node.value[2:], 16)
+        return f'    i32.const {decimal_value}\n'
 
     def visit_boolean(self, node, children):
         if children[0] == 'true':
