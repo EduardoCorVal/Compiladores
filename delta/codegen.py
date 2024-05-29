@@ -81,7 +81,17 @@ class CodeGenerationVisitor(PTNodeVisitor):
         )
 
     def visit_expression(self, node, children):
-        return children[0]
+        if len(children) == 1:
+            return children[0]
+        result = [children[0]]
+        for exp in children[1:]:
+            result.append('    if (result i32)\n')
+            result.append(exp)
+        result.append('    i32.eqz\n' * 2)
+        result.append((  '    else\n'
+                      + '    i32.const 0\n'
+                      + '    end\n') * (len(children) - 1))
+        return ''.join(result)
 
     def visit_additive(self, node, children):
         # print('expression', children)
