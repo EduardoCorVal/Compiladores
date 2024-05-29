@@ -1,3 +1,5 @@
+// Author: A01746664 Eduardo Joel Cortez Valente
+
 // Gramatica del lenguaje Delta
 
 comment = r'[/][/].*|[/][*](.|\n)*?[*][/]'
@@ -15,7 +17,8 @@ if = 'if' expression block ('else if' expression block)* (r'else' block)?
 block = '{' statement* '}'
 while = 'while' expression block
 dowhile = 'do' block 'while' expression ';'
-expression = comparison ('&&' comparison)*
+expression = andexpression ('||' andexpression)*
+andexpression = comparison ('&&' comparison)*
 comparison = additive ((r'(==)' / r'(!=)' / r'(>=)' / r'(>)' / r'(<=)' / r'(<)') additive)*
 additive = multiplicative (('+' / '-') multiplicative)*
 multiplicative = unary (('*' / '/' / '%') unary)*

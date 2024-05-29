@@ -1,38 +1,38 @@
-# File: tests/test_D_do_while.py
+# File: tests/test_10_while.py
 
 from unittest import TestCase
 from delta import Compiler, SyntaxMistake
 from delta.semantics import SemanticMistake
 
 
-class TestDoWhile(TestCase):
+class TestWhile(TestCase):
 
     def setUp(self):
         self.c = Compiler('program')
 
     def test_syntax_mistake(self):
         with self.assertRaises(SyntaxMistake):
-            self.c.realize('do {} while;')
+            self.c.realize('while {}')
 
     def test_semantic_mistake(self):
         with self.assertRaises(SemanticMistake):
-            self.c.realize('var do; 0')
+            self.c.realize('var while; 0')
 
-    def test_do_while_zero(self):
-        self.assertEqual(1,
+    def test_while_zero(self):
+        self.assertEqual(0,
                          self.c.realize(
                             '''
                             var x, y;
-                            x = 1;
+                            x = 0;
                             y = 0;
-                            do {
+                            while x {
                                 x = x - 1;
                                 y = 1;
-                            } while x;
+                            }
                             x + y
                             '''))
 
-    def test_do_while_fact(self):
+    def test_while_fact(self):
         self.assertEqual(120,
                          self.c.realize(
                             '''
@@ -40,38 +40,38 @@ class TestDoWhile(TestCase):
                             n = 5;
                             r = 1;
                             i = 0;
-                            do {
+                            while n - i {
                                 i = i + 1;
                                 r = r * i;
-                            } while n - i;
+                            }
                             r
                             '''))
 
-    def test_do_while_count_down(self):
+    def test_while_count_down(self):
         self.assertEqual(0,
                          self.c.realize(
                             '''
                             var i;
                             i = 10;
-                            do {
+                            while i {
                                 i = i - 1;
-                            } while i;
+                            }
                             i
                             '''))
 
-    def test_do_while_skip_body(self):
-        self.assertEqual(9,
+    def test_while_skip_body(self):
+        self.assertEqual(10,
                          self.c.realize(
                             '''
                             var n;
                             n = 10;
-                            do {
+                            while !n {
                                 n = n - 1;
-                            } while !n;
+                            }
                             n
                             '''))
 
-    def test_do_while_fibo(self):
+    def test_while_fibo(self):
         self.assertEqual(55,
                          self.c.realize(
                             '''
@@ -79,36 +79,36 @@ class TestDoWhile(TestCase):
                             n = 10;
                             a = 0;
                             b = 1;
-                            do {
+                            while n {
                                 var t;
                                 t = b;
                                 b = a + b;
                                 a = t;
                                 n = n - 1;
-                            } while n;
+                            }
                             a
                             '''))
 
-    def test_do_while_nested(self):
+    def test_while_nested(self):
         self.assertEqual(1500,
                          self.c.realize(
                             '''
                             var r, i;
                             r = 0;
                             i = 10;
-                            do {
+                            while i {
                                 var j;
                                 j = 50;
-                                do {
+                                while j {
                                     var k;
                                     k = 3;
-                                    do {
+                                    while k {
                                         r = r + 1;
                                         k = k - 1;
-                                    } while k;
+                                    }
                                     j = j - 1;
-                                } while j;
+                                }
                                 i = i - 1;
-                            } while i;
+                            }
                             r
                             '''))

@@ -1,3 +1,5 @@
+# Author: A01746664 Eduardo Joel Cortez Valente
+
 from delta import Compiler, Phase
 
 source = '''
